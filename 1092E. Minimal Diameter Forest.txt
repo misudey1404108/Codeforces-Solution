@@ -1,0 +1,159 @@
+///......................................///
+///......... Name : Misu Dey  ...........///
+///......... University: CUET ...........///
+///......... Id : 1404108     ...........///
+///......................................///
+
+#include<bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define fr(i,a,b) for(int i=a;i<=b;i++)
+#define re_fr(i,a,b) for(int i=a;i>=b;i--)
+#define frl(i,a,b) for(ll i=a;i<=b;i++)
+#define re_frl(i,a,b) for(ll i=a;i>=b;i--)
+#define mp make_pair
+#define F first
+#define S second
+#define MX 5000010
+#define eps 1e-9
+#define PI acos(-1)
+#define inf 1e18
+#define pll pair<ll,ll>
+#define mod 1000000007
+#define mod2 998244353
+#define gcd(a,b) __gcd(a,b)
+#define lcm(a,b) (a*(b/gcd(a,b)))
+#define PI acos(-1)
+#define fast() ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+using namespace std;
+/// lower bound for sorted array
+/// ll lb = lower_bound( b, b+n, 100 ) - b;
+
+vector<ll>V[10010];
+ll vis[10010];
+ll s_to_d[10010],dtos[10010],emne_dist[10010];
+ll des=-1,mx=0;
+vector<ll>tmp;
+void dfs1(ll node)
+{
+    vis[node]=1;
+    tmp.pb(node);
+    for(auto vp:V[node])
+    {
+        if(!vis[vp])
+        {
+            emne_dist[vp]=emne_dist[node]+1;
+            dfs1(vp);
+        }
+    }
+    if(emne_dist[node]>mx)
+    {
+        mx=emne_dist[node];
+        des=node;
+    }
+}
+void dfs2(ll node)
+{
+    vis[node]=1;
+    tmp.pb(node);
+    for(ll j=0;j<V[node].size();j++)
+    {
+        ll vp=V[node][j];
+        if(!vis[vp])
+        {
+            dtos[vp]=dtos[node]+1;
+            dfs2(vp);
+        }
+    }
+    if(dtos[node]>mx) mx=dtos[node], des=node;
+}
+void dfs3(ll node)
+{
+    vis[node]=1;
+    tmp.pb(node);
+    for(ll j=0;j<V[node].size();j++)
+    {
+        ll vp=V[node][j];
+        if(!vis[vp])
+        {
+            s_to_d[vp]=s_to_d[node]+1;
+            dfs3(vp);
+        }
+    }
+}
+
+int main()
+{
+    fast();
+    ll n,m,u,v,dist,ff;
+    scanf("%lld%lld",&n,&m);
+    for(ll i=1;i<=m;i++)
+    {
+        scanf("%lld%lld",&u,&v);
+        V[u].pb(v);
+        V[v].pb(u);
+    }
+    vector<pll>ans,tt;
+    vector<ll>path;
+    for(ll i=1;i<=n;i++)
+    {
+        if(!vis[i] )
+        {
+            mx=0;
+            des=-1;
+            emne_dist[i]=0;
+            dfs1(i);
+            //cout<<i<<' '<<111<<' '<<mx<<' '<<des<<endl;
+            //cout<<mx<<endl;
+            for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+            mx=0;
+            dtos[des]=0;
+            dfs2(des);
+
+            for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+            s_to_d[des]=0;
+            dfs3(des);
+
+            for(ll j=0;j<tmp.size();j++)
+            {
+                //cout<<tmp[j]<<' '<<dtos[tmp[j]]<<endl;
+                if(dtos[tmp[j]]==mx/2LL && s_to_d[tmp[j]]==(mx-mx/2LL)) {tt.pb(mp(mx,tmp[j])); break;}
+            }
+            tmp.clear();
+        }
+    }
+    sort(tt.begin(),tt.end());
+    /// trees center connection
+    for(ll j=0;j<tt.size()-1;j++)
+    {
+    ll tmp1=tt[j].S,tmp2=tt[tt.size()-1].S;
+    ans.pb(mp(tmp1,tmp2));
+    V[tmp1].pb(tmp2);
+    V[tmp2].pb(tmp1);
+    }
+
+            /// finding forest diameter
+
+            for(ll i=1;i<=n;i++)
+            {
+                vis[i]=0;
+                emne_dist[i]=0;
+                dtos[i]=0;
+            }
+            mx=0;
+            des=-1;
+            emne_dist[1]=0;
+            dfs1(1);
+            //cout<<1<<' '<<111<<' '<<mx<<' '<<des<<endl;
+            for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+            mx=0;
+            dtos[des]=0;
+            dfs2(des);
+            ll dia=mx;
+
+    cout<<dia<<endl;
+    for(ll i=0;i<ans.size();i++)
+        cout<<ans[i].F<<' '<<ans[i].S<<endl;
+
+
+}
