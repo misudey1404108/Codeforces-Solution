@@ -1,0 +1,91 @@
+///......................................///
+///......... Name : Misu Dey  ...........///
+///......... University: CUET ...........///
+///......... Id : 1404108     ...........///
+///......................................///
+
+#include<bits/stdc++.h>
+//#include <ext/pb_ds/assoc_container.hpp>
+//#include <ext/pb_ds/tree_policy.hpp>
+//#include <functional> // for less
+#define ll long long
+#define pb push_back
+#define fr(i,a,b) for(int i=a;i<=b;i++)
+#define re_fr(i,a,b) for(int i=a;i>=b;i--)
+#define frl(i,a,b) for(ll i=a;i<=b;i++)
+#define re_frl(i,a,b) for(ll i=a;i>=b;i--)
+#define mp make_pair
+#define F first
+#define S second
+#define MX 5000010
+#define eps 1e-9
+#define PI acos(-1)
+#define inf 1e18
+#define pll pair<ll,ll>
+#define MOD 1000000007
+#define ull unsigned long long
+#define mod2 100000000
+#define gcd(a,b) __gcd(a,b)
+#define lcm(a,b) (a*(b/gcd(a,b)))
+#define PI acos(-1)
+#define fast() ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+// lower bound for sorted array
+// ll lb = lower_bound( b, b+n, 100 ) - b;
+// upper bound for sorted array
+// ll ub = upper_bound( b, b+n, 200 ) - b;
+using namespace std;
+ll arr[200010];
+pair<ll,ll>p[200010];
+int main()
+{
+    fast();
+    ll n,len; cin>>n>>len;
+    ll x;
+
+    /// finding frequency of numbers and pushing it in a pair and sort it
+
+    for(ll i=1;i<=n;i++)
+    {
+        cin>>x;
+        arr[x]++;
+    }
+    ll sz=1;
+    for(ll i=1;i<=200005;i++)
+    {
+        if(arr[i])
+        {
+            p[sz].F=i;
+            p[sz].S=arr[i];
+            sz++;
+        }
+    }
+    sort(p+1,p+sz+1);
+
+    /// Finding maximum number of cut by binary search
+
+    ll st=1,en=200000,md,take,ans=-1;
+    while(st<=en)
+    {
+        md=(st+en)/2LL;
+        take=0;
+        for(ll i=1;i<=sz;i++)
+        {
+            if(p[i].S>=md) take+=(p[i].S/md);
+        }
+        if(take>=len) {ans=md;st=md+1;}
+        else en=md-1;
+    }
+    //cout<<ans<<endl;
+
+    /// checking if how many times a element can be taken if maximum cut is ans
+
+    ll ele=len;
+    for(ll i=1;i<=sz;i++)
+    {
+        if(p[i].S>=ans)
+        {
+            for(ll j=1;j<=(p[i].S/ans) && ele;j++,ele--) cout<<p[i].F<<' ';
+
+        }
+    }
+}
